@@ -2,6 +2,12 @@ import React, { useState } from 'react'
 import { AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import OAuth from '../components/OAuth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {db} from '../firebase';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 export default function SignUp() {
   const [showPassword,setShowPassword] = useState(true);
 
@@ -10,15 +16,45 @@ export default function SignUp() {
     email: "",
     passWord: "",
   });
-
+  
   const {name, email,passWord} = formData;
-  function onChange(e){
-    console.log(e.target.value);
+  const navigate = useNavigate();
 
+  function onChange(e){
     setFormData((prevState)=>({
       ...prevState,
       [e.target.id]: e.target.value
     }))
+  }
+ 
+  async function onSubmit(e){
+    e.preventDefault();
+
+    try {
+      const auth = getAuth(); 
+      const userCredential = await createUserWithEmailAndPassword(auth,email,passWord);
+      const user = userCredential.user;
+      const formDataCopy = {...formData}
+      delete formDataCopy.passWord;
+
+      formDataCopy.timestamp = serverTimestamp();
+
+      await setDoc(doc(db,"users",user.uid), formDataCopy);
+      console.log(user);
+      
+      updateProfile(auth.currentUser, {
+         displayName: name
+      });
+      toast.success("Sign up successfully");
+      navigate("/");
+    }
+    catch (error) {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      toast.error("Something went wrong with registration")
+    }
   }
   return (
     <section>
@@ -31,7 +67,7 @@ export default function SignUp() {
            />
         </div>
         <div className="w-full md:w-[50%] lg:w-[40%] lg:ml-20"> 
-          <form >
+          <form  onSubmit={onSubmit}>
           <input 
               type="text" 
               name="" 
