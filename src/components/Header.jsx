@@ -28,17 +28,17 @@ export default function Header() {
                 <ul className="flex space-x-10">
                     <li className={` cursor-pointer py-3 text-semibold
                      text-gray-400 border-b-[3px] border-b-transparent 
-                     ${pathMathRoute("/") && "text-black border-b-red-500"}`}
+                     ${pathMathRoute("/") && "text-black !border-b-red-500 "}`}
                      onClick={()=>navigate("/")}
                      >Home</li>
                     <li className={` cursor-pointer py-3 text-semibold
                      text-gray-400 border-b-[3px] border-b-transparent 
-                     ${pathMathRoute("/offer") && "text-black border-b-red-500"}`}
+                     ${pathMathRoute("/offer") && "text-black !border-b-red-500"}`}
                      onClick={()=>navigate("/offer")}
                      >Offer</li>
                     <li className={` cursor-pointer py-3 text-semibold
                      text-gray-400 border-b-[3px] border-b-transparent 
-                     ${pathMathRoute("/sign-in") && "text-black border-b-red-500"}`}
+                     ${pathMathRoute("/sign-in") && "text-black !border-b-red-500"}`}
                      onClick={()=>navigate("/sign-in")}
                      >Sign in</li>
 
